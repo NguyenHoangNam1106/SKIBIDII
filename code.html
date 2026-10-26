@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+
+<html lang="vi" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HocBong Map - Tìm kiếm &amp; Đối soát Học bổng Đà Nẵng Niên Khóa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        'primary-container': '#1e3a8a',
+        secondary: '#0284c7',
+        'surface-subtle': '#f8fafc',
+        'surface-card': '#ffffff',
+        'surface-container': '#eff6ff',
+        'border-subtle': '#e2e8f0',
+        'match-high': '#059669',
+        'match-medium': '#2563eb',
+        'deadline-urgent': '#e11d48'
+      },
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'Be Vietnam Pro', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+.active-nav { background-color: #eff6ff; color: #1e40af; font-weight: 700; }
+</style>
+</head>
+<body class="bg-[#f8f9ff] text-slate-900 font-sans antialiased min-h-screen flex flex-col">
+<!-- Toast Notification -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 pointer-events-none text-sm font-medium" id="toast">
+<span class="material-symbols-outlined text-emerald-400 text-xl" id="toast-icon">check_circle</span>
+<span class="" id="toast-text">Thông báo thành công</span>
+</div>
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+<!-- Brand & Nav -->
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('search'); resetDanangFilter();">
+<div class="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-2xl">school</span>
+</div>
+<div>
+<span class="text-xl font-extrabold text-blue-900 tracking-tight">HocBong<span class="text-sky-600">Map</span></span>
+<span class="block text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Đà Nẵng • Niên khóa 2026</span>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-1">
+<button class="px-3.5 py-2 rounded-lg text-sm transition-colors active-nav" id="tab-btn-search" onclick="switchTab('search')">Tìm học bổng</button>
+<button class="px-3.5 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 transition-colors flex items-center gap-1" id="tab-btn-danang" onclick="switchTab('danang')">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Đà Nẵng 2026 (<span class="" id="header-danang-badge">11</span>)
+        </button>
+<button class="px-3.5 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 transition-colors flex items-center gap-1.5" id="tab-btn-saved" onclick="switchTab('saved')">
+<span class="">Đã lưu</span>
+<span class="bg-blue-100 text-blue-800 text-xs px-1.5 py-0.2 rounded-full font-bold" id="header-saved-count">3</span>
+</button>
+<button class="px-3.5 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 transition-colors" id="tab-btn-suggest" onclick="switchTab('suggest')">Gợi ý cho tôi</button>
+<button class="px-3.5 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 transition-colors" id="tab-btn-guide" onclick="switchTab('guide')">Cẩm nang tuyển sinh 2026</button>
+</nav>
+</div>
+<!-- Actions: Notifications & Profile -->
+<div class="flex items-center gap-3">
+<!-- Notification Dropdown -->
+<div class="relative">
+<button class="relative p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors" onclick="toggleNotifications()">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center" id="notif-badge">4</span>
+</button>
+<div class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50" id="notif-menu">
+<div class="p-3.5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+<span class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-blue-700 text-lg">notifications_active</span> Thông báo học bổng mới 2026
+            </span>
+<button class="text-xs text-blue-700 hover:underline font-medium" onclick="clearNotifications()">Đánh dấu đã đọc</button>
+</div>
+<div class="divide-y divide-slate-100 max-h-80 overflow-y-auto" id="notif-list">
+<div class="p-3 hover:bg-slate-50 cursor-pointer flex items-start gap-2.5" onclick="openDetailModal('bright-scholars-ufl')">
+<div class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">verified</span>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-800">ĐH Ngoại ngữ ĐHĐN: Mở xét Học bổng Bright Scholars 2026-2027 (32 tr/năm)!</p>
+<span class="text-[11px] text-slate-400">Vừa cập nhật • Dành cho SV đang học</span>
+</div>
+</div>
+<div class="p-3 hover:bg-slate-50 cursor-pointer flex items-start gap-2.5" onclick="openDetailModal('vallet-dut-2026')">
+<div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">workspace_premium</span>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-800">Học bổng Vallet 2026–2027 tại ĐH Bách khoa ĐHĐN: 15 suất (34 tr/suất).</p>
+<span class="text-[11px] text-slate-400">Hôm nay • Xét điểm 3 kỳ &amp; NCKH</span>
+</div>
+</div>
+<div class="p-3 hover:bg-slate-50 cursor-pointer flex items-start gap-2.5" onclick="openDetailModal('vnuk-valedictorian-2026')">
+<div class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">military_tech</span>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-800">VNUK công bố học bổng 100% học phí Tân Thủ khoa khóa tuyển sinh 2026.</p>
+<span class="text-[11px] text-slate-400">1 giờ trước • Viện Việt - Anh ĐHĐN</span>
+</div>
+</div>
+<div class="p-3 hover:bg-slate-50 cursor-pointer flex items-start gap-2.5" onclick="openDetailModal('dau-freshman-2026')">
+<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">domain</span>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-800">ĐH Kiến trúc Đà Nẵng: Chính sách cấp học bổng tuyển sinh 2026 đến 100%.</p>
+<span class="text-[11px] text-slate-400">Hôm qua • Xét học bạ &amp; ĐGNL</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="h-6 w-px bg-slate-200"></div>
+<!-- Profile Header Trigger -->
+<button class="flex items-center gap-2 p-1.5 pr-3 rounded-full hover:bg-slate-100 border border-slate-200 transition-all text-left" onclick="openProfileModal()">
+<div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center font-bold text-sm">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<div>
+<span class="block text-xs font-bold text-slate-900 leading-tight" id="user-name-display">Nguyễn Văn A</span>
+<span class="block text-[10px] text-emerald-600 font-bold leading-none" id="user-sub-display">Lớp 12: 8.8 • Đà Nẵng</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-base">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+<!-- VIEW 1: SEARCH FEED -->
+<div class="space-y-6" id="view-search">
+<!-- Top Match Alert Banner -->
+<div class="bg-gradient-to-r from-blue-900 via-blue-800 to-sky-700 rounded-2xl p-5 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center text-sky-300 flex-shrink-0">
+<span class="material-symbols-outlined text-3xl">auto_awesome</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-bold text-base sm:text-lg">Đối soát học bổng Niên khóa 2026 tại Đà Nẵng</h2>
+<span class="bg-amber-400/20 text-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-full border border-amber-400/30">Cập nhật 2026 thực tế</span>
+</div>
+<p class="text-sm text-sky-100 mt-0.5">
+            Dựa trên điểm <strong class="text-white" id="banner-score">Lớp 12: 8.8</strong> và khu vực <strong class="text-white" id="banner-loc">Đà Nẵng</strong>: Đã cập nhật Bright Scholars UFL, Vallet ĐH Bách khoa, VNUK, ĐH Kiến trúc Đà Nẵng!
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold shadow transition-all flex items-center justify-center gap-1.5" onclick="quickFilterDanangOnly()">
+<span class="material-symbols-outlined text-lg">pin_drop</span>
+          Xem <span class="" id="banner-danang-btn-count">11</span> học bổng Đà Nẵng
+        </button>
+<button class="flex-1 md:flex-none px-4 py-2.5 bg-white text-blue-900 hover:bg-sky-50 rounded-xl text-sm font-bold shadow transition-all flex items-center justify-center gap-1.5" onclick="openProfileModal()">
+<span class="material-symbols-outlined text-lg">edit</span>
+          Đổi điểm / Hồ sơ
+        </button>
+</div>
+</div>
+<!-- Layout: Filters (Left) + Search & Cards (Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Filters Sidebar -->
+<aside class="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-5 sticky top-20">
+<div class="flex items-center justify-between pb-3 border-b border-slate-100">
+<h3 class="font-bold text-slate-900 flex items-center gap-1.5 text-base">
+<span class="material-symbols-outlined text-blue-700">tune</span> Bộ lọc tìm kiếm
+          </h3>
+<button class="text-xs text-blue-700 hover:underline font-semibold flex items-center gap-0.5" onclick="resetAllFilters()">
+<span class="material-symbols-outlined text-sm">refresh</span> Đặt lại
+          </button>
+</div>
+<!-- Section 1: Đối tượng tuyển sinh / nhận học bổng (NEW) -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-blue-600">group</span> Đối tượng áp dụng
+            </label>
+<span class="text-xs font-bold text-blue-700" id="target-display-tag">Tất cả</span>
+</div>
+<div class="grid grid-cols-3 gap-1.5 text-center text-xs">
+<button class="target-pill py-2 px-1 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold" id="target-btn-all" onclick="setTargetFilter('all')" type="button">Tất cả</button>
+<button class="target-pill py-2 px-1 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50" id="target-btn-freshman" onclick="setTargetFilter('freshman')" type="button">Tân SV 2026</button>
+<button class="target-pill py-2 px-1 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50" id="target-btn-enrolled" onclick="setTargetFilter('enrolled')" type="button">SV đang học</button>
+</div>
+</div>
+<!-- Section 2: Chọn nhanh Trường tại TP. Đà Nẵng (NEW) -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+<span class="">Trường ĐH tại Đà Nẵng</span>
+<span class="text-[10px] text-slate-400 font-normal">Niên khóa 2026</span>
+</label>
+<div class="space-y-1.5 text-xs text-slate-700 max-h-36 overflow-y-auto pr-1">
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="school-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="ufl"/>
+<span class="">ĐH Ngoại ngữ Đà Nẵng (UFL)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="school-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="dut"/>
+<span class="">ĐH Bách khoa Đà Nẵng (DUT)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="school-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="vnuk"/>
+<span class="">Viện VNUK – ĐH Đà Nẵng</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="school-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="dau"/>
+<span class="">ĐH Kiến trúc Đà Nẵng (DAU)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="school-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="fpt"/>
+<span class="">Đại học FPT Đà Nẵng</span>
+</label>
+</div>
+</div>
+<!-- Section 3: Khu vực (Đà Nẵng & Toàn quốc) -->
+<div class="bg-blue-50/70 p-3.5 rounded-xl border border-blue-100 space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-base">location_on</span> Khu vực áp dụng
+            </label>
+<span class="text-[10px] bg-blue-700 text-white px-2 py-0.5 rounded-full font-bold">Mục tiêu</span>
+</div>
+<div class="space-y-1.5 text-sm">
+<label class="flex items-center justify-between p-2 rounded-lg bg-white border border-blue-200 cursor-pointer hover:bg-blue-50">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 text-blue-700 rounded accent-blue-700" id="filter-danang" onchange="applyFilters()" type="checkbox"/>
+<span class="font-bold text-blue-950">TP. Đà Nẵng</span>
+</div>
+<span class="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded" id="filter-danang-badge">11 suất</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-blue-100/50 cursor-pointer">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 text-blue-700 rounded accent-blue-700" id="filter-mientrung" onchange="applyFilters()" type="checkbox"/>
+<span class="text-slate-700">Miền Trung (Huế, Quảng Nam...)</span>
+</div>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-blue-100/50 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 text-blue-700 rounded accent-blue-700" id="filter-toanquoc" onchange="applyFilters()" type="checkbox"/>
+<span class="text-slate-700">Toàn quốc (Không giới hạn)</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Section 4: Điểm TB Lớp 12 -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-sky-600">history_edu</span> Xét Điểm TB Lớp 12
+            </label>
+<span class="text-xs font-bold text-blue-700" id="gpa12-display-tag">&gt;= 8.0</span>
+</div>
+<div class="grid grid-cols-4 gap-1 text-center text-xs">
+<button class="gpa-pill py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50" id="gpa-btn-all" onclick="setGpa12Filter('all')" type="button">Tất cả</button>
+<button class="gpa-pill py-2 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold" id="gpa-btn-80" onclick="setGpa12Filter('8.0')" type="button">≥ 8.0</button>
+<button class="gpa-pill py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50" id="gpa-btn-85" onclick="setGpa12Filter('8.5')" type="button">≥ 8.5</button>
+<button class="gpa-pill py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50" id="gpa-btn-90" onclick="setGpa12Filter('9.0')" type="button">≥ 9.0</button>
+</div>
+</div>
+<!-- Section 5: Ngành học đào tạo -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-800 uppercase tracking-wider block">Ngành học đào tạo</label>
+<div class="space-y-1.5 text-sm text-slate-700">
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="major-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="it"/>
+<span class="">CNTT, Trí tuệ nhân tạo (AI) &amp; Khoa học dữ liệu</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="major-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="engineering"/>
+<span class="">Kỹ thuật &amp; Vi mạch bán dẫn, Tự động hóa</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="major-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="architecture"/>
+<span class="">Kiến trúc, Quy hoạch &amp; Thiết kế mỹ thuật</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="major-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="language"/>
+<span class="">Ngôn ngữ, Sư phạm ngoại ngữ &amp; Quốc tế học</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-blue-700">
+<input class="major-chk w-4 h-4 rounded text-blue-700 accent-blue-700" onchange="applyFilters()" type="checkbox" value="business"/>
+<span class="">Kinh tế, Quản trị quốc tế &amp; Fintech</span>
+</label>
+</div>
+</div>
+<!-- Section 6: Loại học bổng -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-800 uppercase tracking-wider block">Loại học bổng</label>
+<div class="space-y-1.5 text-sm text-slate-700">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="text-blue-700 accent-blue-700" name="cat" onchange="applyFilters()" type="radio" value="all"/>
+<span class="">Tất cả loại học bổng</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-blue-700 accent-blue-700" name="cat" onchange="applyFilters()" type="radio" value="academic"/>
+<span class="">Học thuật &amp; Điểm xét tuyển / Học bạ</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-blue-700 accent-blue-700" name="cat" onchange="applyFilters()" type="radio" value="vallet_research"/>
+<span class="">Nghiên cứu khoa học &amp; Quỹ Vallet</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-blue-700 accent-blue-700" name="cat" onchange="applyFilters()" type="radio" value="need_based"/>
+<span class="">Vượt khó &amp; Nghị lực vươn lên (Bright Scholars)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-blue-700 accent-blue-700" name="cat" onchange="applyFilters()" type="radio" value="talent"/>
+<span class="">Thủ khoa &amp; Tài năng xuất sắc</span>
+</label>
+</div>
+</div>
+<button class="w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl font-bold text-sm shadow transition-colors flex items-center justify-center gap-1" onclick="applyFilters(); showToast('Đã áp dụng các tiêu chí lọc!');">
+<span class="material-symbols-outlined text-lg">filter_alt</span> Áp dụng bộ lọc
+        </button>
+</aside>
+<!-- Main Feed -->
+<section class="lg:col-span-8 space-y-5">
+<!-- Search Input Bar -->
+<div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-slate-400 text-2xl">search</span>
+<input class="w-full pl-12 pr-28 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-700 text-slate-900" id="search-keyword" oninput="applyFilters()" placeholder="Tìm theo tên học bổng, ĐH Ngoại ngữ, Vallet, VNUK, Kiến trúc, Bách khoa..." type="text"/>
+<button class="absolute right-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-lg shadow" onclick="applyFilters()">Tìm kiếm</button>
+</div>
+<!-- Quick Chips with Real 2026 Hashtags -->
+<div class="flex items-center gap-1.5 flex-wrap text-xs">
+<span class="text-slate-400 font-medium">Tìm nhanh:</span>
+<button class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full font-bold flex items-center gap-1 hover:bg-emerald-100" onclick="quickFilterDanangOnly()">
+<span class="material-symbols-outlined text-xs">pin_drop</span> #ĐàNẵng2026
+            </button>
+<button class="px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full font-bold hover:bg-amber-100" onclick="setSearchTerm('Bright Scholars')">#BrightScholars</button>
+<button class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full font-bold hover:bg-blue-100" onclick="setSearchTerm('Vallet')">#Vallet2026</button>
+<button class="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-full font-bold hover:bg-rose-100" onclick="setSearchTerm('VNUK')">#VNUK2026</button>
+<button class="px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full font-bold hover:bg-indigo-100" onclick="setSearchTerm('Kiến trúc')">#KienTrucDaNang</button>
+<button class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200" onclick="setTargetFilter('freshman')">#TânSinhViên</button>
+<button class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200" onclick="setTargetFilter('enrolled')">#SVDangHoc</button>
+</div>
+</div>
+<!-- Meta Bar -->
+<div class="flex items-center justify-between px-1">
+<div class="text-sm font-semibold text-slate-700">
+            Tìm thấy <span class="text-blue-700 font-bold text-lg" id="scholarship-count">13</span> học bổng phù hợp
+          </div>
+<div class="flex items-center gap-2 text-xs">
+<label class="text-slate-500 font-medium">Sắp xếp:</label>
+<select class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:outline-none cursor-pointer" id="sort-select" onchange="applyFilters()">
+<option value="match">Độ phù hợp cao nhất (Matching)</option>
+<option value="danang_first">Ưu tiên Đà Nẵng 2026</option>
+<option value="gpa12">Xét điểm lớp 12</option>
+<option value="deadline">Hạn nộp gần nhất</option>
+<option value="value">Giá trị tài trợ cao nhất</option>
+</select>
+</div>
+</div>
+<!-- Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cards-grid">
+<!-- Injected by JavaScript -->
+</div>
+<!-- Empty State -->
+<div class="hidden bg-white rounded-2xl p-10 border border-slate-200 text-center space-y-3" id="empty-state">
+<span class="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+<h4 class="font-bold text-slate-800 text-base">Không tìm thấy học bổng phù hợp</h4>
+<p class="text-xs text-slate-500 max-w-sm mx-auto">Vui lòng điều chỉnh lại tiêu chí lọc trường, đối tượng Tân sinh viên hoặc chọn thêm khu vực Toàn quốc để xem thêm cơ hội.</p>
+<button class="px-4 py-2 bg-blue-700 text-white rounded-xl text-xs font-bold" onclick="resetAllFilters()">Đặt lại tất cả bộ lọc</button>
+</div>
+</section>
+</div>
+</div>
+<!-- VIEW 2: SAVED SCHOLARSHIPS -->
+<div class="hidden space-y-6" id="view-saved">
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center justify-between">
+<div>
+<h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-700">bookmark</span> Danh sách học bổng đã lưu
+        </h2>
+<p class="text-xs text-slate-500 mt-1">Theo dõi hạn nộp và chuẩn bị hồ sơ minh chứng đối với các suất học bổng bạn quan tâm.</p>
+</div>
+<button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-700" onclick="switchTab('search')">Tiếp tục tìm kiếm</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="saved-cards-grid">
+<!-- Injected by JS -->
+</div>
+</div>
+<!-- VIEW 3: CẨM NANG ĐIỂM 12 & ĐÀ NẴNG 2026 -->
+<div class="hidden space-y-6" id="view-guide">
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+<h2 class="text-xl font-bold text-slate-900 mb-2">Cẩm nang Tuyển sinh &amp; Săn học bổng Đà Nẵng 2026</h2>
+<p class="text-sm text-slate-600 mb-6">Tổng hợp chi tiết các quỹ học bổng thực tế, điều kiện xét tuyển học bạ lớp 12 và quy trình nộp hồ sơ dành cho thí sinh và sinh viên tại Đại học Đà Nẵng, ĐH Kiến trúc và ĐH FPT.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+<span class="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Học bổng Bright Scholars</span>
+<h3 class="font-bold text-slate-900 text-sm">Chương trình đồng hành 4-5 năm tại ĐH Ngoại ngữ - ĐHĐN</h3>
+<p class="text-xs text-slate-600 leading-relaxed">Cấp 32.000.000 VNĐ/suất/năm cho sinh viên vượt khó. Không chỉ hỗ trợ tài chính, sinh viên còn nhận mentoring kỹ năng mềm suốt khóa học.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+<span class="text-[11px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Quỹ Vallet ĐH Bách Khoa</span>
+<h3 class="font-bold text-slate-900 text-sm">Bí quyết đạt học bổng Vallet 34.000.000 VNĐ</h3>
+<p class="text-xs text-slate-600 leading-relaxed">Yêu cầu SV từ năm 2 có điểm TB 3 kỳ liên tiếp xuất sắc. Điểm cộng lớn nằm ở các đề tài Nghiên cứu khoa học cấp trường và chứng chỉ tiếng Anh IELTS/TOEIC.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">VNUK &amp; ĐH Kiến trúc 2026</span>
+<h3 class="font-bold text-slate-900 text-sm">Học bổng Tân thủ khoa &amp; Top 10 tuyển sinh 2026</h3>
+<p class="text-xs text-slate-600 leading-relaxed">Viện VNUK tài trợ 100% học phí năm 1 cho Thủ khoa và 10 suất Top 10 đầu vào. ĐH Kiến trúc Đà Nẵng miễn giảm 50%-100% học phí cho thí sinh điểm cao học bạ.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white border-t border-slate-200 py-6 mt-10">
+<div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+<div class="flex items-center gap-2">
+<span class="font-bold text-blue-900">HocBongMap © 2026</span>
+<span class="">• Nền tảng điều hướng và đối soát học bổng thực tế tại TP. Đà Nẵng &amp; Toàn quốc</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:text-blue-700" onclick="quickFilterDanangOnly()">Học bổng Đà Nẵng 2026</button>
+<button class="hover:text-blue-700" onclick="openProfileModal()">Tùy chỉnh hồ sơ</button>
+<button class="hover:text-blue-700" onclick="switchTab('guide')">Cẩm nang</button>
+</div>
+</div>
+</footer>
+<!-- MODAL 1: TÙY CHỈNH HỒ SƠ CÁ NHÂN -->
+<div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" id="profile-modal">
+<div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+<div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-blue-700 text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">manage_accounts</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-900 text-base">Tùy chỉnh Hồ sơ Học sinh / Sinh viên</h3>
+<p class="text-xs text-slate-500">Hệ thống dùng thông tin này để tự động tính % Matching</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center text-slate-500" onclick="closeProfileModal()">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<form class="p-5 space-y-4" id="profile-form" onsubmit="event.preventDefault(); saveProfile();">
+<div>
+<label class="block text-xs font-bold text-slate-700 uppercase mb-1">Họ và tên</label>
+<input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-700" id="prof-name" required="" type="text" value="Nguyễn Văn A"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Điểm Lớp 12 -->
+<div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200">
+<label class="block text-xs font-bold text-emerald-900 uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">stars</span> Điểm TB Lớp 12 (0 - 10)
+          </label>
+<input class="w-full px-3 py-2 bg-white border border-emerald-300 rounded-lg text-base font-bold text-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-600" id="prof-gpa12" max="10" min="0" required="" step="0.1" type="number" value="8.8"/>
+<span class="text-[10px] text-emerald-600 block mt-1">Dùng xét tuyển học bổng THPT 2026</span>
+</div>
+<!-- Khu vực -->
+<div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+<label class="block text-xs font-bold text-blue-900 uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_city</span> Khu vực hiện tại
+          </label>
+<select class="w-full px-2.5 py-2 bg-white border border-blue-300 rounded-lg text-sm font-bold text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600" id="prof-loc">
+<option selected="" value="danang">Đà Nẵng (Ưu tiên)</option>
+<option value="mientrung">Miền Trung</option>
+<option value="hanoi">Hà Nội</option>
+<option value="hcm">TP. Hồ Chí Minh</option>
+<option value="toanquoc">Toàn quốc</option>
+</select>
+<span class="text-[10px] text-blue-600 block mt-1">Tự động ưu tiên quỹ Đà Nẵng</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tình trạng học tập</label>
+<select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-700" id="prof-student-status">
+<option selected="" value="freshman">Chuẩn bị vào ĐH (Tân sinh viên 2026)</option>
+<option value="enrolled">Sinh viên đang học tại ĐH Đà Nẵng</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ngoại ngữ</label>
+<select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-700" id="prof-lang">
+<option selected="" value="ielts">IELTS 6.5+</option>
+<option value="toeic">TOEIC 750+</option>
+<option value="none">Chưa có chứng chỉ</option>
+</select>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+<button class="px-4 py-2 text-slate-500 hover:text-slate-800 text-xs font-bold" onclick="closeProfileModal()" type="button">Hủy</button>
+<button class="px-5 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5" type="submit">
+<span class="material-symbols-outlined text-sm">save</span> Lưu hồ sơ &amp; Cập nhật kết quả
+        </button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL 2: CHI TIẾT HỌC BỔNG & NỘP ĐƠN -->
+<div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" id="detail-modal" onclick="if(event.target === this) closeDetailModal()">
+<div class="bg-white rounded-2xl w-full max-w-xl shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
+<div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full" id="m-match">96% Khớp hồ sơ</span>
+<span class="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full" id="m-loc">Đà Nẵng</span>
+<span class="text-xs font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full" id="m-target">Tân sinh viên 2026</span>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center text-slate-500" onclick="closeDetailModal()">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="p-5 overflow-y-auto space-y-4 flex-1">
+<div>
+<span class="text-xs text-slate-400 font-semibold block uppercase" id="m-org">Trường ĐH</span>
+<h3 class="text-lg font-bold text-slate-900 mt-0.5" id="m-title">Tên học bổng</h3>
+<p class="text-xs text-blue-800 font-medium mt-0.5 flex items-center gap-1" id="m-source-row">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span class="" id="m-source">Nguồn chính thức: Đại học Đà Nẵng</span>
+</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+<div>
+<span class="text-[10px] text-slate-400 block font-medium">Trị giá tài trợ</span>
+<span class="text-sm font-bold text-blue-700" id="m-val">30.000.000 VNĐ</span>
+</div>
+<div>
+<span class="text-[10px] text-slate-400 block font-medium">Yêu cầu học tập</span>
+<span class="text-sm font-bold text-emerald-700" id="m-gpa12">&gt;= 8.5</span>
+</div>
+<div>
+<span class="text-[10px] text-slate-400 block font-medium">Hạn nộp hồ sơ</span>
+<span class="text-sm font-bold text-rose-600" id="m-deadline">Còn 12 ngày</span>
+</div>
+</div>
+<div>
+<h4 class="text-xs font-bold text-slate-800 uppercase mb-1">Mô tả học bổng</h4>
+<p class="text-xs text-slate-600 leading-relaxed" id="m-desc">Mô tả chi tiết</p>
+</div>
+<div>
+<h4 class="text-xs font-bold text-slate-800 uppercase mb-1">Điều kiện xét tuyển &amp; Số lượng suất</h4>
+<ul class="text-xs text-slate-600 space-y-1 list-disc pl-4" id="m-req">
+<li class="">Điểm xét tuyển đạt theo quy định niên khóa 2026.</li>
+</ul>
+</div>
+<!-- Quick Apply Box -->
+<div class="p-3 bg-blue-50/80 rounded-xl border border-blue-200 flex items-center justify-between">
+<div>
+<span class="text-xs font-bold text-blue-900 block">Sẵn sàng nộp hồ sơ bằng kết quả đã lưu:</span>
+<span class="text-[11px] text-blue-700" id="m-user-bind">Hồ sơ: Nguyễn Văn A (Điểm 12: 8.8)</span>
+</div>
+<span class="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-base">check_circle</span> Đủ điều kiện xét
+        </span>
+</div>
+</div>
+<div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+<button class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1" id="m-btn-save" onclick="toggleBookmarkCurrentModal()">
+<span class="material-symbols-outlined text-base">bookmark_border</span>
+<span class="" id="m-btn-save-text">Lưu học bổng</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="px-3 py-2 text-xs font-bold text-slate-500 hover:text-slate-800" onclick="closeDetailModal()">Đóng</button>
+<button class="px-5 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1" onclick="submitApplication()">
+<span class="">Nộp hồ sơ trực tuyến</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- SUCCESS MODAL POPUP (Default Hidden) -->
+<div class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" id="success-modal" onclick="if(event.target === this) closeSuccessModal()">
+<div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-200 overflow-hidden transform transition-all animate-in fade-in duration-200">
+<div class="p-6 text-center border-b border-slate-100 bg-gradient-to-b from-emerald-50/70 to-white relative">
+<button class="absolute top-4 right-4 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors" onclick="closeSuccessModal()">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+<div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-sm ring-8 ring-emerald-50">
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</div>
+<span class="inline-block px-3 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-1.5">Hồ sơ đã được gửi thành công</span>
+<h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">Nộp hồ sơ thành công! 🎉</h3>
+<p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">Hồ sơ của bạn đã được ghi nhận và gửi thành công tới Hội đồng xét tuyển!</p>
+</div>
+<div class="p-6 space-y-4 text-xs">
+<div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2.5">
+<div>
+<span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Chương trình học bổng</span>
+<h4 class="font-bold text-slate-900 text-sm mt-0.5 leading-snug" id="success-modal-program">Học bổng Bright Scholars (Niên khóa 2026 – 2027)</h4>
+<span class="text-blue-700 font-semibold text-[11px] block mt-0.5" id="success-modal-org">Trường Đại học Ngoại ngữ – Đại học Đà Nẵng</span>
+</div>
+<div class="pt-2 border-t border-slate-200/80 grid grid-cols-2 gap-3">
+<div>
+<span class="text-slate-400 block text-[10px] font-medium">Mã biên nhận hồ sơ:</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="font-mono font-bold text-blue-800 text-xs tracking-wide" id="success-modal-code">#HBM-2026-DN8842</span>
+<button class="p-1 text-slate-400 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors" onclick="copySuccessCode()" title="Sao chép mã hồ sơ" type="button">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+</div>
+<div>
+<span class="text-slate-400 block text-[10px] font-medium">Thời gian nộp:</span>
+<span class="font-semibold text-slate-800 block mt-0.5" id="success-modal-time">Vừa xong (Niên khóa tuyển sinh 2026)</span>
+</div>
+</div>
+<div class="pt-2 border-t border-slate-200/80 flex items-center justify-between">
+<span class="text-slate-500 font-medium">Trạng thái:</span>
+<span class="inline-flex items-center gap-1 font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Đang chờ đối soát sơ bộ (Hẹn phản hồi qua email trong 3 - 5 ngày làm việc)
+</span>
+</div>
+</div>
+<div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3.5 space-y-1.5 text-blue-900">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-blue-700 text-base flex-shrink-0 mt-0.5">mark_email_read</span>
+<p class="text-slate-700 leading-snug">Biên nhận điện tử và hướng dẫn theo dõi tiến độ đã được gửi tới email: <strong class="text-blue-950 font-bold" id="success-modal-email">nguyenvana.dn2026@gmail.com</strong></p>
+</div>
+</div>
+<div class="pt-2 flex flex-col sm:flex-row items-center gap-2.5">
+<button class="w-full sm:flex-1 py-2.5 px-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl text-center shadow-md transition-colors flex items-center justify-center gap-1.5" onclick="closeSuccessModal(); switchTab('saved');" type="button">
+<span class="material-symbols-outlined text-base">bookmark</span> Theo dõi tiến độ hồ sơ
+</button>
+<button class="w-full sm:flex-1 py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 font-bold rounded-xl text-center transition-colors flex items-center justify-center gap-1.5" onclick="closeSuccessModal();" type="button">
+<span class="material-symbols-outlined text-base">search</span> Tiếp tục tìm học bổng khác
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+// Profile State
+let currentUser = {
+  name: "Nguyễn Văn A",
+  gpa12: 8.8,
+  location: "danang",
+  studentStatus: "freshman",
+  school: "THPT Chuyên Lê Quý Đôn Đà Nẵng",
+  lang: "ielts"
+};
+
+// Scholarships Data with Real 2026 Da Nang Entries
+const scholarships = [
+  // 1. Bright Scholars 2026 - 2027 (ĐH Ngoại ngữ - ĐH Đà Nẵng)
+  {
+    id: "bright-scholars-ufl",
+    title: "Học bổng Bright Scholars (Niên khóa 2026 - 2027)",
+    org: "Trường Đại học Ngoại ngữ – Đại học Đà Nẵng",
+    schoolKey: "ufl",
+    targetAudience: "enrolled",
+    targetLabel: "Sinh viên đang học",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "need_based",
+    majors: ["language", "business"],
+    minGpa12: 8.0,
+    stipend: "32.000.000 VNĐ",
+    stipendSub: "/ suất / năm (Đồng hành 4-5 năm)",
+    numSlots: "Tối thiểu 8 suất",
+    deadline: "15/05/2026",
+    deadlineDays: 20,
+    tags: ["ĐH Ngoại ngữ Đà Nẵng", "Vượt khó & Học tập", "Sinh viên đang học", "Niên khóa 2026 - 2027"],
+    source: "Thông báo Trường Đại học Ngoại ngữ – Đại học Đà Nẵng",
+    desc: "Chương trình học bổng tài trợ 32.000.000 VNĐ/suất/năm dành cho sinh viên đang theo học có hoàn cảnh khó khăn, giàu nghị lực vươn lên trong học tập và rèn luyện. Học bổng cam kết đồng hành xuyên suốt 4 - 5 năm học đại học.",
+    requirements: [
+      "Sinh viên đang học tại Trường ĐH Ngoại ngữ – ĐH Đà Nẵng có hoàn cảnh khó khăn.",
+      "Có ý chí và nghị lực vươn lên, tinh thần học hỏi và thái độ rèn luyện tốt.",
+      "Quy mô tối thiểu 8 suất, được cấp liên tục mỗi năm học nếu duy trì kết quả tốt."
+    ],
+    saved: true
+  },
+  // 2. Vallet 2026–2027 (ĐH Bách khoa - ĐH Đà Nẵng)
+  {
+    id: "vallet-dut-2026",
+    title: "Học bổng Vallet năm học 2026–2027",
+    org: "Trường Đại học Bách khoa – Đại học Đà Nẵng",
+    schoolKey: "dut",
+    targetAudience: "enrolled",
+    targetLabel: "Sinh viên từ năm 2 - năm áp cuối",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "vallet_research",
+    majors: ["engineering", "it"],
+    minGpa12: 8.5,
+    stipend: "34.000.000 VNĐ",
+    stipendSub: "/ suất trao trực tiếp",
+    numSlots: "15 suất",
+    deadline: "30/04/2026",
+    deadlineDays: 12,
+    tags: ["ĐH Bách khoa Đà Nẵng", "Tài năng & Nghiên cứu", "Sinh viên đang học", "15 suất"],
+    source: "Quỹ Vallet (Gặp gỡ Việt Nam) & ĐH Bách khoa - ĐHĐN",
+    desc: "Suất học bổng danh giá của Tổ chức Khoa học Gặp gỡ Việt Nam & Quỹ Odon Vallet trao tặng 15 sinh viên xuất sắc của Trường ĐH Bách khoa - ĐH Đà Nẵng.",
+    requirements: [
+      "Sinh viên từ năm thứ 2 đến năm áp cuối theo học các ngành kỹ thuật, công nghệ.",
+      "Kết quả học tập xuất sắc trong 3 học kỳ liên tiếp gần nhất.",
+      "Ưu tiên sinh viên có đề tài nghiên cứu khoa học đạt giải, bài báo hội nghị hoặc chứng chỉ ngoại ngữ quốc tế."
+    ],
+    saved: true
+  },
+  // 3. Nâng bước thủ khoa VNUK năm 2026
+  {
+    id: "vnuk-valedictorian-2026",
+    title: "Học bổng Nâng bước thủ khoa VNUK năm 2026",
+    org: "Viện Nghiên cứu và Đào tạo Việt – Anh (VNUK) – ĐH Đà Nẵng",
+    schoolKey: "vnuk",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên 2026 (Thủ khoa)",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "talent",
+    majors: ["it", "business", "engineering"],
+    minGpa12: 9.0,
+    stipend: "100% Học phí",
+    stipendSub: "~ 45.000.000 - 50.000.000 VNĐ (Năm đầu)",
+    numSlots: "1 suất duy nhất",
+    deadline: "15/07/2026",
+    deadlineDays: 45,
+    tags: ["VNUK - ĐH Đà Nẵng", "Thủ khoa 2026", "Tân sinh viên", "100% học phí"],
+    source: "Thông báo tuyển sinh Viện Nghiên cứu và Đào tạo Việt - Anh (VNUK)",
+    desc: "Chương trình vinh danh và hỗ trợ tài chính toàn phần cho thủ khoa đầu vào trong đợt tuyển sinh năm 2026 nhập học tại VNUK – ĐH Đà Nẵng.",
+    requirements: [
+      "Thí sinh đạt vị trí Thủ khoa toàn khóa tuyển sinh đại học chính quy 2026 của VNUK.",
+      "Tài trợ 100% học phí trọn gói của năm học đầu tiên.",
+      "Có cơ hội tiếp tục gia hạn học bổng các năm sau dựa trên điểm tích lũy học phần tiếng Anh & chuyên ngành."
+    ],
+    saved: false
+  },
+  // 4. Tài năng Tân sinh viên VNUK năm 2026 (Top 10)
+  {
+    id: "vnuk-top10-2026",
+    title: "Học bổng Tài năng Tân sinh viên VNUK năm 2026",
+    org: "Viện Nghiên cứu và Đào tạo Việt – Anh (VNUK) – ĐH Đà Nẵng",
+    schoolKey: "vnuk",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên 2026 (Top 10)",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "academic",
+    majors: ["it", "business", "engineering"],
+    minGpa12: 8.5,
+    stipend: "5.000.000 VNĐ",
+    stipendSub: "/ suất khen thưởng nhập học",
+    numSlots: "10 suất",
+    deadline: "15/07/2026",
+    deadlineDays: 45,
+    tags: ["VNUK - ĐH Đà Nẵng", "Tân sinh viên 2026", "Top 10 đầu vào", "10 suất"],
+    source: "Đề án tuyển sinh VNUK – Đại học Đà Nẵng 2026",
+    desc: "Trao tặng cho 10 tân sinh viên đạt thành tích điểm thi tốt nghiệp THPT hoặc điểm học bạ cao nhất khóa 2026 (không bao gồm Thủ khoa).",
+    requirements: [
+      "Top 10 thí sinh có điểm xét tuyển đầu vào cao nhất các ngành đào tạo chuẩn quốc tế tại VNUK năm 2026.",
+      "Hoàn tất thủ tục xác nhận nhập học đúng thời hạn quy định của Bộ GD&ĐT và Đại học Đà Nẵng."
+    ],
+    saved: false
+  },
+  // 5. Học bổng Tân sinh viên 2026 - ĐH Kiến trúc Đà Nẵng (DAU)
+  {
+    id: "dau-freshman-2026",
+    title: "Chính sách Học bổng Tân sinh viên 2026 - ĐH Kiến trúc Đà Nẵng",
+    org: "Trường Đại học Kiến trúc Đà Nẵng (DAU)",
+    schoolKey: "dau",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên 2026",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "academic",
+    majors: ["architecture", "engineering", "business"],
+    minGpa12: 8.0,
+    stipend: "15 - 25 Triệu VNĐ",
+    stipendSub: "Miễn giảm 50% - 100% học phí HK1",
+    numSlots: "Theo chỉ tiêu tuyển sinh 2026",
+    deadline: "20/08/2026",
+    deadlineDays: 60,
+    tags: ["ĐH Kiến trúc Đà Nẵng", "Tân sinh viên 2026", "Chính sách chính thức", "Miễn 50-100%"],
+    source: "Hội đồng Tuyển sinh Trường Đại học Kiến trúc Đà Nẵng (DAU)",
+    desc: "Chính sách học bổng chính thức dành cho các bạn học sinh đăng ký xét tuyển và nhập học sớm khóa 2026 tại ĐH Kiến trúc Đà Nẵng có điểm xét tuyển xuất sắc hoặc đạt giải năng khiếu mỹ thuật kiến trúc.",
+    requirements: [
+      "Tân sinh viên niên khóa 2026 đạt điểm xét tuyển học bạ lớp 12 hoặc điểm thi THPT theo ngưỡng quy định.",
+      "Ưu tiên thí sinh đạt giải học sinh giỏi cấp tỉnh/thành phố hoặc giải vẽ năng khiếu kiến trúc.",
+      "Mức hỗ trợ từ 15.000.000 đến 25.000.000 VNĐ (tương đương 50% - 100% học phí học kỳ đầu)."
+    ],
+    saved: false
+  },
+  // 6. FPT Đà Nẵng 2026
+  {
+    id: "fpt-danang-2026",
+    title: "Học bổng Toàn phần Tài năng Đại học FPT Đà Nẵng 2026",
+    org: "Đại học FPT Đà Nẵng",
+    schoolKey: "fpt",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên 2026",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "talent",
+    majors: ["it", "business"],
+    minGpa12: 8.5,
+    stipend: "100% Học phí (140tr+)",
+    stipendSub: "Toàn khóa 4 năm",
+    numSlots: "30 suất",
+    deadline: "10/05/2026",
+    deadlineDays: 14,
+    tags: ["Đà Nẵng", "Điểm 12 >= 8.5", "Toàn phần", "FPT Đà Nẵng"],
+    source: "Đại học FPT Đà Nẵng cơ sở FPT City",
+    desc: "Suất học bổng danh giá trao tặng học sinh THPT xuất sắc khu vực Đà Nẵng và miền Trung nhập học cơ sở FPT City Ngũ Hành Sơn năm 2026.",
+    requirements: [
+      "Điểm học bạ THPT năm lớp 12 từ 8.5 trở lên hoặc thuộc Top 10 SchoolRank.",
+      "Tham gia kỳ thi đánh giá năng lực học bổng tập trung hoặc xét giải HSG Quốc gia."
+    ],
+    saved: true
+  },
+  // 7. Học bổng Tân sinh viên ĐH Bách Khoa - ĐH Đà Nẵng
+  {
+    id: "bk-danang",
+    title: "Học bổng Tân sinh viên ĐH Bách Khoa - ĐH Đà Nẵng",
+    org: "Trường Đại học Bách Khoa Đà Nẵng",
+    schoolKey: "dut",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên 2026",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "academic",
+    majors: ["it", "engineering"],
+    minGpa12: 8.5,
+    stipend: "30.000.000 VNĐ",
+    stipendSub: "/ suất tân sinh viên",
+    numSlots: "25 suất",
+    deadline: "15/06/2026",
+    deadlineDays: 35,
+    tags: ["Đà Nẵng", "DUT", "Điểm 12 >= 8.5", "Tân sinh viên"],
+    source: "Đại học Bách Khoa – Đại học Đà Nẵng",
+    desc: "Chương trình học bổng tiếp sức các bạn học sinh lớp 12 có điểm học bạ xuất sắc trúng tuyển vào các khối ngành CNTT, Tự động hóa và Vi mạch bán dẫn tại ĐH Bách Khoa Đà Nẵng.",
+    requirements: [
+      "Học sinh lớp 12 có điểm trung bình cả năm từ 8.5 trở lên.",
+      "Trúng tuyển đợt 1 vào ĐH Bách khoa – ĐHĐN."
+    ],
+    saved: false
+  },
+  // 8. Quỹ Ươm mầm Tài năng Đà Nẵng - VNPT
+  {
+    id: "uommam-danang",
+    title: "Học bổng Quỹ Ươm mầm Tài năng Đà Nẵng - VNPT",
+    org: "Quỹ Phát triển Nhân lực & VNPT Đà Nẵng",
+    schoolKey: "other",
+    targetAudience: "freshman",
+    targetLabel: "THPT & Tân SV",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "academic",
+    majors: ["it", "engineering"],
+    minGpa12: 8.0,
+    stipend: "50.000.000 VNĐ",
+    stipendSub: "+ Cơ hội thực tập VNPT",
+    numSlots: "12 suất",
+    deadline: "25/05/2026",
+    deadlineDays: 22,
+    tags: ["Đà Nẵng", "Điểm 12 >= 8.0", "Công nghệ số"],
+    source: "VNPT Đà Nẵng & Sở GD-ĐT TP. Đà Nẵng",
+    desc: "Hỗ trợ học sinh lớp 12 và sinh viên các trường đại học trên địa bàn TP. Đà Nẵng đam mê nghiên cứu chuyển đổi số và công nghệ mạng viễn thông.",
+    requirements: [
+      "Học sinh lớp 12 các trường THPT tại Đà Nẵng hoặc tân sinh viên các trường ĐH Đà Nẵng.",
+      "Điểm môn Toán và Tin học lớp 12 từ 8.5 trở lên."
+    ],
+    saved: false
+  },
+  // 9. Hội Khuyến học TP Đà Nẵng
+  {
+    id: "khuyenhoc-danang",
+    title: "Học bổng Tiếp sức đến trường TP. Đà Nẵng 2026",
+    org: "Hội Khuyến học TP. Đà Nẵng",
+    schoolKey: "other",
+    targetAudience: "freshman",
+    targetLabel: "Học sinh 12 & Tân SV",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "need_based",
+    majors: ["it", "business", "architecture", "language"],
+    minGpa12: 8.0,
+    stipend: "20.000.000 VNĐ",
+    stipendSub: "+ Thẻ xe buýt sinh viên",
+    numSlots: "50 suất",
+    deadline: "20/06/2026",
+    deadlineDays: 40,
+    tags: ["Đà Nẵng", "Vượt khó", "Điểm 12 >= 8.0"],
+    source: "Hội Khuyến học Thành phố Đà Nẵng",
+    desc: "Dành riêng cho học sinh cư trú tại Đà Nẵng có hoàn cảnh khó khăn đạt học lực Giỏi năm lớp 12 chuẩn bị bước vào giảng đường đại học niên khóa 2026.",
+    requirements: [
+      "Có hộ khẩu hoặc thường trú tại TP. Đà Nẵng từ 2 năm trở lên.",
+      "Điểm trung bình cả năm lớp 12 đạt loại Giỏi trở lên, có giấy xác nhận hoàn cảnh khó khăn."
+    ],
+    saved: false
+  },
+  // 10. Lập trình viên Sun* Đà Nẵng
+  {
+    id: "sun-danang",
+    title: "Học bổng Lập trình viên Trẻ Sun* - Chi nhánh Đà Nẵng",
+    org: "Sun Asterisk Đà Nẵng",
+    schoolKey: "other",
+    targetAudience: "enrolled",
+    targetLabel: "Sinh viên ĐH tại Đà Nẵng",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "talent",
+    majors: ["it"],
+    minGpa12: 8.0,
+    stipend: "35.000.000 VNĐ",
+    stipendSub: "+ Đào tạo Tiếng Nhật IT",
+    numSlots: "10 suất",
+    deadline: "18/05/2026",
+    deadlineDays: 16,
+    tags: ["Đà Nẵng", "Lập trình", "Cơ hội việc làm"],
+    source: "Sun Asterisk chi nhánh Đà Nẵng",
+    desc: "Ươm mầm các bạn trẻ đam mê kỹ thuật phần mềm tại Đà Nẵng, xét điểm học bạ môn Toán/Tin lớp 12 và tư duy thuật toán.",
+    requirements: [
+      "Sinh viên các trường đại học tại Đà Nẵng ngành Công nghệ thông tin.",
+      "Vượt qua bài test tư duy thuật toán trực tuyến."
+    ],
+    saved: false
+  },
+  // 11. Doanh nghiệp Nhật Bản KCN Hòa Khánh Đà Nẵng
+  {
+    id: "japan-danang",
+    title: "Học bổng Doanh nghiệp Nhật Bản - KCN Hòa Khánh Đà Nẵng",
+    org: "Hiệp hội Doanh nghiệp Nhật Bản JBA Danang",
+    schoolKey: "other",
+    targetAudience: "enrolled",
+    targetLabel: "SV khối Kỹ thuật",
+    location: "danang",
+    locationName: "Đà Nẵng",
+    category: "academic",
+    majors: ["engineering", "it"],
+    minGpa12: 8.2,
+    stipend: "25.000.000 VNĐ",
+    stipendSub: "+ Tham quan nhà máy CNC",
+    numSlots: "20 suất",
+    deadline: "25/05/2026",
+    deadlineDays: 21,
+    tags: ["Đà Nẵng", "KCN Hòa Khánh", "Điểm 12 >= 8.2"],
+    source: "Hiệp hội Doanh nghiệp Nhật Bản JBA Đà Nẵng",
+    desc: "Tài trợ khuyến học dành cho học sinh, sinh viên tại Đà Nẵng theo học ngành Kỹ thuật, Cơ khí và Tự động hóa.",
+    requirements: [
+      "Sinh viên ĐH Bách khoa Đà Nẵng hoặc ĐH Sư phạm Kỹ thuật Đà Nẵng.",
+      "Điểm rèn luyện từ 80 trở lên."
+    ],
+    saved: false
+  },
+  // 12. VinGroup 2026 (Toàn quốc)
+  {
+    id: "vin-2026",
+    title: "Học bổng Khoa học Công nghệ VinGroup 2026",
+    org: "Quỹ Đổi mới Sáng tạo VinIF",
+    schoolKey: "other",
+    targetAudience: "freshman",
+    targetLabel: "Tân sinh viên & Nghiên cứu",
+    location: "toanquoc",
+    locationName: "Toàn quốc",
+    category: "academic",
+    majors: ["it", "engineering"],
+    minGpa12: 9.0,
+    stipend: "120.000.000 VNĐ",
+    stipendSub: "/ suất / năm",
+    numSlots: "50 suất toàn quốc",
+    deadline: "30/05/2026",
+    deadlineDays: 24,
+    tags: ["Toàn quốc", "Điểm 12 >= 9.0", "Nghiên cứu"],
+    source: "Quỹ Đổi mới Sáng tạo Vingroup (VinIF)",
+    desc: "Học bổng danh giá cấp quốc gia dành cho các bạn trẻ xuất sắc đam mê nghiên cứu khoa học, công nghệ cao và phát triển AI.",
+    requirements: [
+      "Điểm TB lớp 12 từ 9.0 trở lên hoặc giải Nhất/Nhì HSG Quốc gia môn Toán, Tin, Lý.",
+      "Cam kết theo đuổi nghiên cứu khoa học."
+    ],
+    saved: false
+  },
+  // 13. AmCham 2026 (Toàn quốc)
+  {
+    id: "amcham-2026",
+    title: "Học bổng Sinh viên Năng động AmCham 2026",
+    org: "Hiệp hội Thương mại Hoa Kỳ",
+    schoolKey: "other",
+    targetAudience: "enrolled",
+    targetLabel: "Sinh viên ĐH năm 3 - 4",
+    location: "toanquoc",
+    locationName: "Toàn quốc",
+    category: "talent",
+    majors: ["business", "it", "language"],
+    minGpa12: 8.0,
+    stipend: "45.000.000 VNĐ",
+    stipendSub: "+ 6 tháng Mentorship",
+    numSlots: "60 suất toàn quốc",
+    deadline: "12/06/2026",
+    deadlineDays: 32,
+    tags: ["Toàn quốc", "Tiếng Anh IELTS", "Kỹ năng"],
+    source: "AmCham Vietnam",
+    desc: "Tìm kiếm các tài năng trẻ có tố chất lãnh đạo, khả năng giao tiếp ngoại ngữ tốt và học lực giỏi.",
+    requirements: [
+      "Sinh viên các trường đại học tại Đà Nẵng, Hà Nội, TP.HCM.",
+      "Chứng chỉ IELTS từ 6.5+ hoặc tương đương."
+    ],
+    saved: false
+  }
+];
+
+let currentModalItem = null;
+let currentGpa12Filter = "all";
+let currentTargetFilter = "all";
+
+// Compute Match % dynamically
+function calculateMatch(item) {
+  let score = 75;
+  if (currentUser.location === item.location || item.location === "toanquoc") score += 12;
+  if (currentUser.gpa12 >= item.minGpa12) score += 8;
+  if (currentUser.studentStatus === item.targetAudience) score += 5;
+  return Math.min(score, 98);
+}
+
+// Render Scholarship Cards
+function renderCards(list) {
+  const container = document.getElementById("cards-grid");
+  const emptyState = document.getElementById("empty-state");
+  const countEl = document.getElementById("scholarship-count");
+
+  countEl.innerText = list.length;
+
+  if (list.length === 0) {
+    container.innerHTML = "";
+    emptyState.classList.remove("hidden");
+    return;
+  }
+  emptyState.classList.add("hidden");
+
+  container.innerHTML = list.map(item => {
+    const match = calculateMatch(item);
+    const isUrgent = item.deadlineDays <= 14;
+    const isDanang = item.location === "danang";
+    const targetBadgeColor = item.targetAudience === 'freshman' 
+      ? 'bg-amber-50 text-amber-800 border-amber-200' 
+      : 'bg-purple-50 text-purple-800 border-purple-200';
+
+    return `
+      <div class="bg-white rounded-2xl p-5 border ${isDanang ? 'border-blue-300 ring-1 ring-blue-100 shadow-sm' : 'border-slate-200'} hover:shadow-md transition-all flex flex-col justify-between relative group">
+        <div>
+          <!-- Header Card -->
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">${item.org}</span>
+              <h3 class="font-bold text-slate-900 text-base leading-snug group-hover:text-blue-700 transition-colors cursor-pointer" onclick="openDetailModal('${item.id}')">${item.title}</h3>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0 flex-wrap justify-end">
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${match}% Hợp
+              </span>
+              ${isDanang ? '<span class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">Đà Nẵng</span>' : ''}
+            </div>
+          </div>
+
+          <!-- Target Audience Pill -->
+          <div class="mb-2">
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-md border ${targetBadgeColor}">
+              🎯 ${item.targetLabel}
+            </span>
+          </div>
+
+          <!-- Stipend & GPA 12 -->
+          <div class="grid grid-cols-2 gap-2 my-2.5 p-2.5 bg-slate-50 rounded-xl text-xs">
+            <div>
+              <span class="text-slate-400 block text-[10px]">Trị giá học bổng</span>
+              <span class="font-bold text-blue-800 text-sm">${item.stipend}</span>
+              <span class="text-slate-500 text-[10px] block leading-tight mt-0.5">${item.stipendSub}</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">Tiêu chí xét</span>
+              <span class="font-bold ${currentUser.gpa12 >= item.minGpa12 ? 'text-emerald-700' : 'text-slate-700'} text-sm">&gt;= ${item.minGpa12}</span>
+              <span class="text-[10px] ${currentUser.gpa12 >= item.minGpa12 ? 'text-emerald-600 font-bold' : 'text-slate-400'} block leading-tight mt-0.5">
+                ${currentUser.gpa12 >= item.minGpa12 ? '✓ Bạn đạt chuẩn' : 'Cần trau dồi thêm'}
+              </span>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="flex items-center gap-1.5 flex-wrap my-2">
+            ${item.tags.map(t => `<span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${t}</span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Footer Card -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between mt-3 text-xs">
+          <div class="flex items-center gap-1.5 font-medium ${isUrgent ? 'text-rose-600 font-bold' : 'text-slate-500'}">
+            <span class="material-symbols-outlined text-base">${isUrgent ? 'alarm' : 'calendar_today'}</span>
+            <span>${isUrgent ? `Còn ${item.deadlineDays} ngày (${item.deadline})` : `Hạn nộp: ${item.deadline}`}</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button onclick="toggleBookmark('${item.id}')" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors ${item.saved ? 'text-blue-700 bg-blue-50 border-blue-300' : 'text-slate-400'}">
+              <span class="material-symbols-outlined text-lg">${item.saved ? 'bookmark' : 'bookmark_border'}</span>
+            </button>
+            <button onclick="openApplySuccessFor('${item.id}')" class="px-3.5 py-2 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-1">
+              <span>Xem & Nộp</span>
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Filter Logic
+function applyFilters() {
+  const kw = document.getElementById("search-keyword").value.toLowerCase().trim();
+  const danangChecked = document.getElementById("filter-danang").checked;
+  const mientrungChecked = document.getElementById("filter-mientrung").checked;
+  const toanquocChecked = document.getElementById("filter-toanquoc").checked;
+
+  const selectedCat = document.querySelector('input[name="cat"]:checked')?.value || 'all';
+
+  const selectedMajors = Array.from(document.querySelectorAll('.major-chk:checked')).map(el => el.value);
+  const selectedSchools = Array.from(document.querySelectorAll('.school-chk:checked')).map(el => el.value);
+  const sort = document.getElementById("sort-select").value;
+
+  let filtered = scholarships.filter(item => {
+    // Keyword search
+    if (kw) {
+      const text = (item.title + " " + item.org + " " + item.tags.join(" ") + " " + item.locationName + " " + (item.source || "")).toLowerCase();
+      if (!text.includes(kw)) return false;
+    }
+
+    // Target Audience Filter (Tân sinh viên 2026 vs SV đang học)
+    if (currentTargetFilter !== "all") {
+      if (item.targetAudience !== currentTargetFilter) return false;
+    }
+
+    // School Filter in Da Nang
+    if (selectedSchools.length > 0) {
+      if (!selectedSchools.includes(item.schoolKey)) return false;
+    }
+
+    // Location Checkbox Group
+    let locMatch = false;
+    if (danangChecked && item.location === "danang") locMatch = true;
+    if (mientrungChecked && (item.location === "danang" || item.location === "mientrung")) locMatch = true;
+    if (toanquocChecked && item.location === "toanquoc") locMatch = true;
+    if (!danangChecked && !mientrungChecked && !toanquocChecked) locMatch = true;
+    if (!locMatch) return false;
+
+    // GPA 12
+    if (currentGpa12Filter !== "all") {
+      const minGpa = parseFloat(currentGpa12Filter);
+      if (item.minGpa12 > minGpa + 0.05) return false;
+    }
+
+    // Category
+    if (selectedCat !== "all" && item.category !== selectedCat) return false;
+
+    // Majors
+    if (selectedMajors.length > 0) {
+      const hasMajor = item.majors.some(m => selectedMajors.includes(m));
+      if (!hasMajor) return false;
+    }
+
+    return true;
+  });
+
+  // Sort
+  if (sort === "match") {
+    filtered.sort((a, b) => calculateMatch(b) - calculateMatch(a));
+  } else if (sort === "danang_first") {
+    filtered.sort((a, b) => {
+      if (a.location === 'danang' && b.location !== 'danang') return -1;
+      if (a.location !== 'danang' && b.location === 'danang') return 1;
+      return calculateMatch(b) - calculateMatch(a);
+    });
+  } else if (sort === "gpa12") {
+    filtered.sort((a, b) => a.minGpa12 - b.minGpa12);
+  } else if (sort === "deadline") {
+    filtered.sort((a, b) => a.deadlineDays - b.deadlineDays);
+  } else if (sort === "value") {
+    filtered.sort((a, b) => parseInt(b.stipend.replace(/\D/g, '')) - parseInt(a.stipend.replace(/\D/g, '')));
+  }
+
+  renderCards(filtered);
+}
+
+// Target Audience Pill Trigger
+function setTargetFilter(target) {
+  currentTargetFilter = target;
+  document.querySelectorAll('.target-pill').forEach(btn => {
+    btn.className = "target-pill py-2 px-1 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50";
+  });
+  if (target === 'all') {
+    document.getElementById("target-btn-all").className = "target-pill py-2 px-1 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+    document.getElementById("target-display-tag").innerText = "Tất cả đối tượng";
+  } else if (target === 'freshman') {
+    document.getElementById("target-btn-freshman").className = "target-pill py-2 px-1 rounded-lg border border-amber-600 bg-amber-600 text-white font-bold";
+    document.getElementById("target-display-tag").innerText = "Tân SV 2026";
+  } else if (target === 'enrolled') {
+    document.getElementById("target-btn-enrolled").className = "target-pill py-2 px-1 rounded-lg border border-purple-600 bg-purple-700 text-white font-bold";
+    document.getElementById("target-display-tag").innerText = "SV đang học";
+  }
+  applyFilters();
+}
+
+// Quick Danang Filter Trigger
+function quickFilterDanangOnly() {
+  switchTab('search');
+  document.getElementById("filter-danang").checked = true;
+  document.getElementById("filter-mientrung").checked = false;
+  document.getElementById("filter-toanquoc").checked = false;
+  setGpa12Filter('all');
+  currentTargetFilter = 'all';
+  document.querySelectorAll('.target-pill').forEach(btn => {
+    btn.className = "target-pill py-2 px-1 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50";
+  });
+  document.getElementById("target-btn-all").className = "target-pill py-2 px-1 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+  document.getElementById("target-display-tag").innerText = "Tất cả";
+  document.querySelectorAll('.school-chk').forEach(el => el.checked = false);
+  document.getElementById("search-keyword").value = "";
+  applyFilters();
+  showToast("Đang hiển thị 11 học bổng thực tế tại TP. Đà Nẵng niên khóa 2026!");
+}
+
+function resetDanangFilter() {
+  document.getElementById("filter-danang").checked = true;
+  document.getElementById("filter-toanquoc").checked = true;
+  applyFilters();
+}
+
+function resetAllFilters() {
+  document.getElementById("search-keyword").value = "";
+  document.getElementById("filter-danang").checked = true;
+  document.getElementById("filter-mientrung").checked = false;
+  document.getElementById("filter-toanquoc").checked = true;
+  document.querySelector('input[name="cat"][value="all"]').checked = true;
+  document.querySelectorAll('.major-chk').forEach(el => el.checked = false);
+  document.querySelectorAll('.school-chk').forEach(el => el.checked = false);
+  setGpa12Filter('all');
+  setTargetFilter('all');
+  applyFilters();
+  showToast("Đã khôi phục toàn bộ tiêu chí lọc!");
+}
+
+function setSearchTerm(term) {
+  document.getElementById("search-keyword").value = term;
+  applyFilters();
+}
+
+function setGpa12Filter(val) {
+  currentGpa12Filter = val;
+  document.querySelectorAll('.gpa-pill').forEach(btn => {
+    btn.className = "gpa-pill py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50";
+  });
+  if (val === 'all') {
+    document.getElementById("gpa-btn-all").className = "gpa-pill py-2 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+    document.getElementById("gpa12-display-tag").innerText = "Tất cả điểm";
+  } else if (val === '8.0') {
+    document.getElementById("gpa-btn-80").className = "gpa-pill py-2 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+    document.getElementById("gpa12-display-tag").innerText = "≥ 8.0";
+  } else if (val === '8.5') {
+    document.getElementById("gpa-btn-85").className = "gpa-pill py-2 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+    document.getElementById("gpa12-display-tag").innerText = "≥ 8.5";
+  } else if (val === '9.0') {
+    document.getElementById("gpa-btn-90").className = "gpa-pill py-2 rounded-lg border border-blue-600 bg-blue-700 text-white font-bold";
+    document.getElementById("gpa12-display-tag").innerText = "≥ 9.0";
+  }
+  applyFilters();
+}
+
+// Bookmark Toggle
+function toggleBookmark(id) {
+  const item = scholarships.find(s => s.id === id);
+  if (!item) return;
+  item.saved = !item.saved;
+  updateSavedBadge();
+  applyFilters();
+  renderSavedView();
+  showToast(item.saved ? `Đã lưu học bổng: ${item.title}` : `Đã bỏ lưu học bổng.`);
+}
+
+function updateSavedBadge() {
+  const count = scholarships.filter(s => s.saved).length;
+  document.getElementById("header-saved-count").innerText = count;
+  const danangCount = scholarships.filter(s => s.location === 'danang').length;
+  document.getElementById("header-danang-badge").innerText = danangCount;
+  document.getElementById("banner-danang-btn-count").innerText = danangCount;
+  document.getElementById("filter-danang-badge").innerText = `${danangCount} suất`;
+}
+
+// Render Saved Tab View
+function renderSavedView() {
+  const container = document.getElementById("saved-cards-grid");
+  const savedList = scholarships.filter(s => s.saved);
+
+  if (savedList.length === 0) {
+    container.innerHTML = `<div class="col-span-3 text-center py-12 text-slate-400">Bạn chưa lưu học bổng nào. Hãy duyệt và bấm biểu tượng Bookmark để lưu.</div>`;
+    return;
+  }
+
+  container.innerHTML = savedList.map(item => `
+    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-1.5 mb-1.5">
+          <span class="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">${item.locationName}</span>
+          <span class="text-[11px] font-semibold text-slate-500">${item.targetLabel}</span>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm mt-1">${item.title}</h4>
+        <p class="text-xs text-slate-500 mt-0.5">${item.org}</p>
+        <div class="mt-3 text-xs font-bold text-blue-800">${item.stipend}</div>
+      </div>
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between mt-4">
+        <button onclick="toggleBookmark('${item.id}')" class="text-xs text-rose-600 font-semibold hover:underline">Bỏ lưu</button>
+        <button onclick="openApplySuccessFor('${item.id}')" class="px-3 py-1.5 bg-blue-700 text-white font-bold rounded-lg text-xs">Nộp hồ sơ</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Modals: Detail & Apply
+function openDetailModal(id) {
+  const item = scholarships.find(s => s.id === id);
+  if (!item) return;
+  currentModalItem = item;
+
+  document.getElementById("m-title").innerText = item.title;
+  document.getElementById("m-org").innerText = item.org;
+  document.getElementById("m-loc").innerText = item.locationName;
+  document.getElementById("m-target").innerText = item.targetLabel;
+  document.getElementById("m-source").innerText = item.source || "Đại học Đà Nẵng";
+  document.getElementById("m-val").innerText = item.stipend;
+  document.getElementById("m-gpa12").innerText = `>= ${item.minGpa12}`;
+  document.getElementById("m-deadline").innerText = `Còn ${item.deadlineDays} ngày (${item.deadline})`;
+  document.getElementById("m-desc").innerText = item.desc;
+  document.getElementById("m-match").innerText = `${calculateMatch(item)}% Khớp hồ sơ`;
+  document.getElementById("m-user-bind").innerText = `Hồ sơ: ${currentUser.name} (Điểm 12: ${currentUser.gpa12} • ${currentUser.location === 'danang' ? 'Đà Nẵng' : 'Toàn quốc'})`;
+
+  const reqContainer = document.getElementById("m-req");
+  if (item.requirements && item.requirements.length > 0) {
+    reqContainer.innerHTML = item.requirements.map(r => `<li>${r}</li>`).join('') + `<li>Số lượng tài trợ: <strong>${item.numSlots || 'Chưa công bố'}</strong></li>`;
+  } else {
+    reqContainer.innerHTML = `<li>Xét theo kết quả học tập THPT hoặc thành tích đại học.</li><li>Số lượng dự kiến: ${item.numSlots || 'Theo quy chế'}</li>`;
+  }
+
+  const btnSaveText = document.getElementById("m-btn-save-text");
+  btnSaveText.innerText = item.saved ? "Đã lưu" : "Lưu học bổng";
+
+  document.getElementById("detail-modal").classList.remove("hidden");
+}
+
+function closeDetailModal() {
+  document.getElementById("detail-modal").classList.add("hidden");
+  currentModalItem = null;
+}
+
+function toggleBookmarkCurrentModal() {
+  if (!currentModalItem) return;
+  toggleBookmark(currentModalItem.id);
+  const btnSaveText = document.getElementById("m-btn-save-text");
+  btnSaveText.innerText = currentModalItem.saved ? "Đã lưu" : "Lưu học bổng";
+}
+
+function submitApplication() {
+  if (!currentModalItem) return;
+  const item = currentModalItem;
+  closeDetailModal();
+  openSuccessModalWithItem(item);
+}
+
+// Success Modal Handler
+function openApplySuccessFor(id) {
+  const item = scholarships.find(s => s.id === id);
+  if (!item) return;
+  openSuccessModalWithItem(item);
+}
+
+function openSuccessModalWithItem(item) {
+  document.getElementById("success-modal-program").innerText = item.title;
+  document.getElementById("success-modal-org").innerText = item.org;
+  const randomCode = `#HBM-2026-DN${Math.floor(1000 + Math.random() * 9000)}`;
+  document.getElementById("success-modal-code").innerText = randomCode;
+  document.getElementById("success-modal-time").innerText = "Vừa xong (Niên khóa tuyển sinh 2026)";
+  document.getElementById("success-modal-email").innerText = "nguyenvana.dn2026@gmail.com";
+  
+  const modal = document.getElementById("success-modal");
+  modal.classList.remove("hidden");
+  showToast(`Đã gửi hồ sơ thành công vào "${item.title}"!`);
+}
+
+function closeSuccessModal() {
+  const modal = document.getElementById("success-modal");
+  modal.classList.add("hidden");
+}
+
+function copySuccessCode() {
+  const code = document.getElementById("success-modal-code").innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    showToast(`Đã sao chép mã biên nhận: ${code}`);
+  }).catch(() => {
+    showToast(`Mã biên nhận: ${code}`);
+  });
+}
+
+// Profile Modal & Save
+function openProfileModal() {
+  document.getElementById("prof-name").value = currentUser.name;
+  document.getElementById("prof-gpa12").value = currentUser.gpa12;
+  document.getElementById("prof-loc").value = currentUser.location;
+  document.getElementById("prof-student-status").value = currentUser.studentStatus;
+  document.getElementById("prof-lang").value = currentUser.lang;
+  document.getElementById("profile-modal").classList.remove("hidden");
+}
+
+function closeProfileModal() {
+  document.getElementById("profile-modal").classList.add("hidden");
+}
+
+function saveProfile() {
+  const name = document.getElementById("prof-name").value.trim();
+  const gpa12 = parseFloat(document.getElementById("prof-gpa12").value);
+  const loc = document.getElementById("prof-loc").value;
+  const studentStatus = document.getElementById("prof-student-status").value;
+  const lang = document.getElementById("prof-lang").value;
+
+  if (isNaN(gpa12) || gpa12 < 0 || gpa12 > 10) {
+    alert("Vui lòng nhập điểm lớp 12 hợp lệ từ 0 đến 10.");
+    return;
+  }
+
+  currentUser = { name, gpa12, location: loc, studentStatus, lang, school: currentUser.school };
+
+  // Update Header & Banner UI
+  document.getElementById("user-name-display").innerText = name;
+  const locLabel = loc === 'danang' ? 'Đà Nẵng' : (loc === 'mientrung' ? 'Miền Trung' : 'Toàn quốc');
+  const statusLabel = studentStatus === 'freshman' ? 'Tân SV 2026' : 'SV Đang học';
+  document.getElementById("user-sub-display").innerText = `Lớp 12: ${gpa12} • ${statusLabel} • ${locLabel}`;
+  document.getElementById("banner-score").innerText = `Lớp 12: ${gpa12}`;
+  document.getElementById("banner-loc").innerText = locLabel;
+
+  closeProfileModal();
+  applyFilters();
+  showToast("Đã lưu hồ sơ cá nhân và tính toán lại độ phù hợp!");
+}
+
+// Notifications Popup
+function toggleNotifications() {
+  const menu = document.getElementById("notif-menu");
+  menu.classList.toggle("hidden");
+}
+
+function clearNotifications() {
+  document.getElementById("notif-badge").style.display = "none";
+  showToast("Đã đánh dấu đã đọc tất cả thông báo.");
+  document.getElementById("notif-menu").classList.add("hidden");
+}
+
+// Navigation Tabs Switcher
+function switchTab(tab) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active-nav"));
+  document.getElementById("view-search").classList.remove("hidden");
+  document.getElementById("view-saved").classList.add("hidden");
+  document.getElementById("view-guide").classList.add("hidden");
+
+  if (tab === "search") {
+    document.getElementById("tab-btn-search").classList.add("active-nav");
+  } else if (tab === "danang") {
+    document.getElementById("tab-btn-danang").classList.add("active-nav");
+    quickFilterDanangOnly();
+  } else if (tab === "saved") {
+    document.getElementById("tab-btn-saved").classList.add("active-nav");
+    document.getElementById("view-search").classList.add("hidden");
+    document.getElementById("view-saved").classList.remove("hidden");
+    renderSavedView();
+  } else if (tab === "suggest") {
+    document.getElementById("tab-btn-suggest").classList.add("active-nav");
+    document.getElementById("sort-select").value = "match";
+    applyFilters();
+    showToast("Đã sắp xếp danh sách theo độ tương thích cao nhất của bạn!");
+  } else if (tab === "guide") {
+    document.getElementById("tab-btn-guide").classList.add("active-nav");
+    document.getElementById("view-search").classList.add("hidden");
+    document.getElementById("view-guide").classList.remove("hidden");
+  }
+}
+
+// Keyboard shortcuts (Escape to close modals)
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" || e.keyCode === 27) {
+    closeSuccessModal();
+    closeDetailModal();
+    closeProfileModal();
+    const notifMenu = document.getElementById("notif-menu");
+    if (notifMenu && !notifMenu.classList.contains("hidden")) {
+      notifMenu.classList.add("hidden");
+    }
+  }
+});
+
+// Toast helper
+let toastTimeout;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  const text = document.getElementById("toast-text");
+  text.innerText = msg;
+  el.classList.remove("translate-y-20", "opacity-0");
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    el.classList.add("translate-y-20", "opacity-0");
+  }, 2500);
+}
+
+// Init
+window.addEventListener("DOMContentLoaded", () => {
+  updateSavedBadge();
+  applyFilters();
+});
+</script>
+</body></html>
